@@ -22,7 +22,28 @@ app.use(function validateBearerToken(req, res, next) {
 });
 
 app.get(`/moviedex`, (req, res) => {
-  res.json(MOVIEDEX);
+  let response = MOVIEDEX;
+  const { genre, country, avg_vote } = req.query;
+
+  if (genre) {
+    response = response.filter(movie =>
+      movie.genre.toLowerCase().includes(genre.toLowerCase())
+    );
+  }
+
+  if (country) {
+    response = response.filter(movie =>
+      movie.country.toLowerCase().includes(country.toLowerCase())
+    );
+  }
+
+  if (avg_vote) {
+    response = response.filter(movie =>
+      movie.avg_vote >= Number(avg_vote)
+    );
+  }
+
+  res.json(response);
 });
 
 const PORT = 8000;
